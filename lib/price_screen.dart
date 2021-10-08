@@ -1,4 +1,7 @@
+import 'package:bitcoin_ticker/coin_data.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:io' show Platform;
 
 class PriceScreen extends StatefulWidget {
   const PriceScreen({Key? key}) : super(key: key);
@@ -8,6 +11,54 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
+  String selectedCurrency = 'USD';
+  late int rate;
+//-----------------------------------------------------------------------------//
+  DropdownButton<String> androidDropdown() {
+    List<DropdownMenuItem<String>> dropdownItems = [];
+
+    for (String currency in currenciesList) {
+      dropdownItems.add(
+        DropdownMenuItem(child: Text(currency), value: currency),
+      );
+    }
+
+    return DropdownButton<String>(
+      value: selectedCurrency,
+      items: dropdownItems,
+      onChanged: (String? value) {
+        setState(() {
+          selectedCurrency = value!;
+        });
+      },
+    );
+  }
+
+//-----------------------------------------------------------------------------//
+  CupertinoPicker iOSPicker() {
+    List<Text> pickerItems = [];
+
+    for (String currency in currenciesList) {
+      pickerItems.add(Text(currency));
+    }
+    return CupertinoPicker(
+      itemExtent: 32.0,
+      onSelectedItemChanged: (int selectedIndex) {
+        print(selectedIndex);
+      },
+      children: pickerItems,
+    );
+  }
+
+//-----------------------------------------------------------------------------//
+
+//-----------------------------------------------------------------------------//
+  @override
+  void initState() {
+    super.initState();
+  }
+
+// -----------------------------------------------------------------------------//
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +95,7 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: const EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: null,
+            child: Platform.isIOS ? iOSPicker() : androidDropdown(),
           ),
         ],
       ),
